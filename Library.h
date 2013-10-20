@@ -8,96 +8,96 @@
 #include <iostream>
 #include <vector>
 #include "Date.h"
-#define DEBUG 0
+#define DEBUG true
 #define debug if (DEBUG) cout
 
 using namespace std;
 
 class Library
 {
- public:
-  // Enumerated types for Library Objects
-  enum LibType {LIBRARY, MEMBER, ASSET, BOOK, PERIODICAL};
+    public:
+        // Enumerated types for Library Objects
+        enum LibType {LIBRARY, MEMBER, ASSET, BOOK, PERIODICAL};
 
-  // The default constructor creates a new library object 
-  Library ();
+        // The default constructor creates a new library object 
+        Library ();
 
-  // This constructor will create a new library object identical to the passed library object
-  Library (const Library & S);
+        // This constructor will create a new library object identical to the passed library object
+        Library (const Library & S);
 
-  // This destructor currently does nothing
-  ~Library ();
+        // This destructor currently does nothing
+        ~Library ();
 
-  // This assignment operator will copy one object to another of the same type
-  Library & operator = (const Library & S);
+        // This assignment operator will copy one object to another of the same type
+        Library & operator = (const Library & S);
 
-  // The IsA function will return the appropriate LibType value
-  virtual LibType IsA () const;
-  
-  //
-  virtual string GetID () const;
+        // The IsA function will return the appropriate LibType value
+        virtual LibType IsA () const;
 
-  //
-  virtual string GetName () const;
+        //
+        virtual string GetID () const;
 
-  //
-  virtual vector<Library*> GetCheckedOutBy () const;
-  
-  //
-  virtual vector<string> GetCheckedOutByStr () const;
+        //
+        virtual string GetName () const;
 
-  //
-  virtual void SetCheckedOut (Date & D);
+        //
+        virtual vector<Library*> GetCheckedOutBy () const;
 
-  //
-  virtual int DaysOverdue (Date today);
+        //
+        virtual vector<string> GetCheckedOutByStr () const;
 
-  // The input operator will call the ReadIn function for the passed library object
-  friend istream & operator >> (istream & ins, const Library & S);
+        //
+        virtual void SetCheckedOut (Date & D);
 
-  // The ouput operator will call the WriteOut function for the passed library object
-  friend ostream & operator << (ostream & outs, const Library & S);
+        //
+        virtual int DaysOverdue (Date today);
 
-  //
-  virtual void CheckoutLink (vector <Library *> vB, vector <Library *> vP);
+        // The input operator will call the ReadIn function for the passed library object
+        friend istream & operator >> (istream & ins, const Library & S);
 
-  //
-  virtual void Checkout (vector <Library *>, string str, int count);
+        // The ouput operator will call the WriteOut function for the passed library object
+        friend ostream & operator << (ostream & outs, const Library & S);
 
-  //
-  virtual void Return (vector <Library *> V, string str, int count);
+        //
+        virtual void CheckoutLink (vector <Library *> vB, vector <Library *> vP);
 
-  //
-  virtual void ReadIn (istream & input);
+        //
+        virtual void Checkout (vector <Library *>, string str, int count);
 
-  //
-  virtual void WriteOut (ostream & output) const;
+        //
+        virtual void Return (vector <Library *> V, string str, int count);
 
-  //
-  virtual string GetPhone();
+        //
+        virtual void ReadIn (istream & input);
 
-  //
-  struct Issue
-  {
-    string Volume;
-    string Number;
-    Date PubDate;
-    Date CheckedOut;
-    Library * CheckedOutBy;
-    string CheckedOutByStr;
-    int DaysOverdue (Date today);
-  };
+        //
+        virtual void WriteOut (ostream & output) const;
 
-  //
-  virtual vector<Issue> GetIssues();
-  
+        //
+        virtual string GetPhone();
 
- protected:
-  LibType LType;
-  string Name;
-  string ID;
- 
- private:
+        //
+        struct Issue
+        {
+            string Volume;
+            string Number;
+            Date PubDate;
+            Date CheckedOut;
+            Library * CheckedOutBy;
+            string CheckedOutByStr;
+            int DaysOverdue (Date today);
+        };
+
+        //
+        virtual vector<Issue> GetIssues();
+
+
+    protected:
+        LibType LType;
+        string Name;
+        string ID;
+
+    private:
 };
 
 #endif

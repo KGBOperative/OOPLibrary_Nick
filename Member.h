@@ -15,57 +15,57 @@ class Asset;
 
 class Member : public Library
 {
- public:
-  // The default constructor creates a new member object 
-  Member ();
+    public:
+        // The default constructor creates a new member object 
+        Member ();
 
-  // This constructor will create a new member object identical to the passed member object
-  Member (const Member & S);
+        // This constructor will create a new member object identical to the passed member object
+        Member (const Member & S);
 
-  // This destructor currently does nothing
-  ~Member ();
+        // This destructor currently does nothing
+        ~Member ();
 
-  // This assignment operator will copy one object to another of the same type
-  Member & operator = (const Member & S);
+        // This assignment operator will copy one object to another of the same type
+        Member & operator = (const Member & S);
 
-  // The IsA function will return the appropriate LibType value
-  LibType IsA () const;
+        // The IsA function will return the appropriate LibType value
+        LibType IsA () const;
 
-  //
-  void CheckoutLink (vector <Library *> vB, vector <Library *> vP); // const;
+        //
+        void CheckoutLink (vector <Library *> vB, vector <Library *> vP); // const;
 
-  //
-  void Checkout (vector <Library *> V, string str, int count); // const;
+        //
+        void Checkout (vector <Library *> V, string str, int count); // const;
 
-  //
-  void Return (vector <Library *> V, string str, int count);
-  
-  //
-  string GetName() const;
+        //
+        void Return (vector <Library *> V, string str, int count);
 
-  //
-  string GetID () const;
+        //
+        string GetName() const;
 
-  //
-  bool RemoveCard (string check);
+        //
+        string GetID () const;
 
-  //
-  void ReadIn (istream & input); //, vector <Library> & L);
+        //
+        bool RemoveCard (string check);
 
-  //
-  void WriteOut (ostream & output) const;
+        //
+        void ReadIn (istream & input); //, vector <Library> & L);
 
-  //
-  vector <Library*> GetCheckedOut() const;
+        //
+        void WriteOut (ostream & output) const;
 
-  //
-  string GetPhone();
+        //
+        vector <Library*> GetCheckedOut() const;
 
- private:
-  vector <Library *> CheckedOut;
-  vector <string> CheckedOutStr;
-  string Address, City, State, Zip;
-  string PhoneNumber;
+        //
+        string GetPhone();
+
+    private:
+        vector <Library *> CheckedOut;
+        vector <string> CheckedOutStr;
+        string Address, City, State, Zip;
+        string PhoneNumber;
 };
 
 #endif

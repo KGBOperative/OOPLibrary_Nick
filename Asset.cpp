@@ -11,13 +11,13 @@ using namespace std;
 // The default constructor creates a new asset object 
 Asset :: Asset ()
 {
-  AType = OTHER;
+    AType = OTHER;
 } 
-  
+
 // This constructor will create a new asset object identical to the passed asset object
 Asset :: Asset (const Asset & S)
 {
-  AType = S.AType;
+    AType = S.AType;
 }
 
 // This destructor currently does nothing
@@ -27,13 +27,13 @@ Asset :: ~Asset ()
 // This assignment operator will copy one object to another of the same type
 Asset & Asset ::  operator = (const Asset & S)
 {
-  AType = S.AType;
+    AType = S.AType;
 }
 
 // The IsA function will return the appropriate LibType value
 Library :: LibType Asset ::  IsA () const
 {
-  return ASSET;
+    return ASSET;
 }
 
 //
@@ -55,45 +55,45 @@ void Asset :: WriteOut (ostream & output)
 // Converts string Asset Types into actual Asset Types
 Asset :: AssetType Asset :: GetAType (string S)
 {
-  if (S == "SHORT")
-    return SHORT;
-  if (S == "LITERARY")
-    return LITERARY;
-  if (S == "MYSTERY")
-    return MYSTERY;
-  if (S == "SCIFI")
-    return SCIFI;
-  if (S == "SELFHELP")
-    return SELFHELP;
-  if (S == "BIOGRAPHY")
-    return BIOGRAPHY;
-  if (S == "COOKING")
-    return COOKING;
-  if (S == "SPORTS")
-    return SPORTS;
-  if (S == "OTHER")
-    return OTHER;
+    if (S == "SHORT")
+        return SHORT;
+    if (S == "LITERARY")
+        return LITERARY;
+    if (S == "MYSTERY")
+        return MYSTERY;
+    if (S == "SCIFI")
+        return SCIFI;
+    if (S == "SELFHELP")
+        return SELFHELP;
+    if (S == "BIOGRAPHY")
+        return BIOGRAPHY;
+    if (S == "COOKING")
+        return COOKING;
+    if (S == "SPORTS")
+        return SPORTS;
+    if (S == "OTHER")
+        return OTHER;
 }
 
 // Converts asset types to strings.
 string Asset :: GetATypeAsString (AssetType S) const
 {
-  if (S == SHORT)
-    return "SHORT";
-  if (S == LITERARY)
-    return "LITERARY";
-  if (S == MYSTERY)
-    return "MYSTERY";
-  if (S == SCIFI)
-    return "SCIFI";
-  if (S == SELFHELP)
-    return "SELFHELP";
-  if (S == BIOGRAPHY)
-    return "BIOGRAPHY";
-  if (S == COOKING)
-    return "COOKING";
-  if (S == SPORTS)
-    return "SPORTS";
-  if (S == OTHER)
-    return "OTHER";
+    if (S == SHORT)
+        return "SHORT";
+    if (S == LITERARY)
+        return "LITERARY";
+    if (S == MYSTERY)
+        return "MYSTERY";
+    if (S == SCIFI)
+        return "SCIFI";
+    if (S == SELFHELP)
+        return "SELFHELP";
+    if (S == BIOGRAPHY)
+        return "BIOGRAPHY";
+    if (S == COOKING)
+        return "COOKING";
+    if (S == SPORTS)
+        return "SPORTS";
+    if (S == OTHER)
+        return "OTHER";
 }

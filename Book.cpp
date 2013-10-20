@@ -16,197 +16,203 @@ using namespace std;
 // The default constructor creates a new book object 
 Book :: Book ()
 {
-  LType = BOOK;
-  BType = FICTION;
-  Author = ISBN = Name = ID = CheckedOutByStr = "";
+    LType = BOOK;
+    BType = FICTION;
+    Author = ISBN = Name = ID = CheckedOutByStr = "";
 }
 
 // This constructor will create a new book object identical to the passed book object
 Book :: Book (const Book & S)
 {
-  LType = BOOK;
-  BType = S.BType;
-  Author = S.Author;
-  ISBN = S.ISBN;
-  Name = S.Name;
-  ID = S.ID;
-  CheckedOut = S.CheckedOut;
-  CheckedOutByStr = S.CheckedOutByStr;
+    LType = BOOK;
+    BType = S.BType;
+    Author = S.Author;
+    ISBN = S.ISBN;
+    Name = S.Name;
+    ID = S.ID;
+    CheckedOut = S.CheckedOut;
+    CheckedOutByStr = S.CheckedOutByStr;
 }
 
 // This destructor currently does nothing
 Book :: ~Book () {}
-  
+
 // This assignment operator will copy one object to another of the same type
 Book & Book :: operator = (const Book & S)
 {
-  LType = BOOK;
-  BType = S.BType;
-  Author = S.Author;
-  ISBN = S.ISBN;
-  Name = S.Name;
-  ID = S.ID;
-  CheckedOut = S.CheckedOut;
-  CheckedOutByStr = S.CheckedOutByStr;
+    LType = BOOK;
+    BType = S.BType;
+    Author = S.Author;
+    ISBN = S.ISBN;
+    Name = S.Name;
+    ID = S.ID;
+    CheckedOut = S.CheckedOut;
+    CheckedOutByStr = S.CheckedOutByStr;
 }
 
 // The IsA function will return the appropriate LibType value
 Library :: LibType Book :: IsA () const
 {
-  return BOOK;
+    return BOOK;
 }
-  
+
 // 
 string Book :: GetID () const
 {
-  return ID;
+    return ID;
 }
 
 string Book :: GetName () const
 {
-  return Name;
+    return Name;
 }
 
 
 vector <Library*> Book :: GetCheckedOutBy () const
 {
-  vector<Library*> COB;
-  COB.push_back(CheckedOutBy);
-  return COB;
+    vector<Library*> COB;
+    COB.push_back(CheckedOutBy);
+    return COB;
 }
 
 vector <string> Book :: GetCheckedOutByStr () const
 {
-  vector<string> COBS;
-  COBS.push_back(CheckedOutByStr);
-  return COBS;
+    vector<string> COBS;
+    COBS.push_back(CheckedOutByStr);
+    return COBS;
 }
 
 int Book :: DaysOverdue (Date today)
 {
-  int NumDaysOverdue;
-  NumDaysOverdue = (today - CheckedOut) - 21;
-  return NumDaysOverdue;
+    int NumDaysOverdue;
+    NumDaysOverdue = (today - CheckedOut) - 21;
+    return NumDaysOverdue;
 }
 
 
 void Book :: SetCheckedOut (Date & D)
 {
-  CheckedOut = D;
+    CheckedOut = D;
 }
 
 //
-void Book :: CheckoutLink (vector <Library *> vB, vector <Library *> vP) // const
+void Book :: CheckoutLink (vector <Library *> vM, vector <Library *> vP) // const
 {
-  for (int j = 0; j < vB.size(); j++)
-    //for (int k = 0; k < vM[i].CheckedOutStr.size(); k++)                                       
-    if (CheckedOutByStr == vB[j]->GetID())
-      {
-	Library *m = vB[j]; // 	Member *m = vB[j]; 
-	CheckedOutBy = m;
-      }
+    debug << "Book ID = " << GetID() << endl;
+
+    for (int j = 0; j < vM.size(); j++) {
+        //for (int k = 0; k < vM[i].CheckedOutStr.size(); k++)                                       
+        if (CheckedOutByStr == vM[j]->GetID())
+        {
+            debug << "\t" << CheckedOutByStr << " ?= " << vM[j]->GetID() << endl;
+            Library *m = vM[j]; // 	Member *m = vM[j]; 
+            CheckedOutBy = m;
+            debug << "\t\tit does\n";
+            break;
+        }
+    }
 }
 
 //
 void Book :: Checkout (vector <Library *> V, string str, int count) // const
 {
-  CheckedOutByStr = str;
-  CheckedOutBy = V[count];
+    CheckedOutByStr = str;
+    CheckedOutBy = V[count];
 }
 
 //
 void Book :: Return (vector <Library *> V, string str, int count)                                                
 {                                 
-  CheckedOutByStr = "NONE";
-  CheckedOutBy = NULL;
+    CheckedOutByStr = "NONE";
+    CheckedOutBy = NULL;
 }
 
 //
 void Book ::ReadIn (istream & input)
 {
-  string line;
-  while (input >> line)
+    string line;
+    while (input >> line)
     {
-      if (line == "Name:")
-	{
-	  getline(input, line);
-	  line.erase(line.begin());
-	  Name = line;
-	}
-      if (line == "ID:")
-	{
-	  getline(input, line);
-	  line.erase(line.begin());
-	  ID = line;
-	}
-      if (line == "Asset_Type:")
-	{
-	  getline(input, line);
-	  line.erase(line.begin());
-	  AType = GetAType(line);
-	}
-      if (line == "Author:")
-	{
-	  getline(input, line);
-	  line.erase(line.begin());
-	  Author = line;
-	}
-      if (line == "ISBN:")
-	{
-	  getline(input, line);
-	  line.erase(line.begin());
-	  ISBN = line;
-	}
-      if (line == "Type:")
-	{
-	  getline(input, line);
-	  line.erase(line.begin());
-	  BType = GetBType(line);
-	}
-      if (line == "Checked_Out_On:")
-	{
-	  CheckedOut.ReadIn(input);
-	}
-      if (line == "Checked_Out_By:")
-	{
-	  getline(input, line);
-	  line.erase(line.begin());
-	  //cout << line;
-	  CheckedOutByStr = line;
-	  //cout << CheckedOutBy;
-	  // Implement assignment to Member*
-	  return;
-	}
+        if (line == "Name:")
+        {
+            getline(input, line);
+            line.erase(line.begin());
+            Name = line;
+        }
+        if (line == "ID:")
+        {
+            getline(input, line);
+            line.erase(line.begin());
+            ID = line;
+        }
+        if (line == "Asset_Type:")
+        {
+            getline(input, line);
+            line.erase(line.begin());
+            AType = GetAType(line);
+        }
+        if (line == "Author:")
+        {
+            getline(input, line);
+            line.erase(line.begin());
+            Author = line;
+        }
+        if (line == "ISBN:")
+        {
+            getline(input, line);
+            line.erase(line.begin());
+            ISBN = line;
+        }
+        if (line == "Type:")
+        {
+            getline(input, line);
+            line.erase(line.begin());
+            BType = GetBType(line);
+        }
+        if (line == "Checked_Out_On:")
+        {
+            CheckedOut.ReadIn(input);
+        }
+        if (line == "Checked_Out_By:")
+        {
+            getline(input, line);
+            line.erase(line.begin());
+            //cout << line;
+            CheckedOutByStr = line;
+            //cout << CheckedOutBy;
+            // Implement assignment to Member*
+            return;
+        }
     }
 }
 //
 void Book ::WriteOut (ostream & output) const
 {
-  output << "Type: BOOK" << endl;
-  output << "Name: " << Name << endl;
-  output << "ID: " << ID << endl;
-  output << "Asset_Type: " << GetATypeAsString(AType) << endl; 
-  output << "Author: " << Author << endl;
-  output << "ISBN: " << ISBN << endl;
-  output << "Type: " << GetBTypeAsString(BType) << endl; 
-  output << "Checked_Out_On: "; CheckedOut.WriteOut(output); output << endl;
-  output << "Checked_Out_By: " << CheckedOutByStr << endl << endl;
+    output << "Type: BOOK" << endl;
+    output << "Name: " << Name << endl;
+    output << "ID: " << ID << endl;
+    output << "Asset_Type: " << GetATypeAsString(AType) << endl; 
+    output << "Author: " << Author << endl;
+    output << "ISBN: " << ISBN << endl;
+    output << "Type: " << GetBTypeAsString(BType) << endl; 
+    output << "Checked_Out_On: "; CheckedOut.WriteOut(output); output << endl;
+    output << "Checked_Out_By: " << CheckedOutByStr << endl << endl;
 }
 
 Book :: BookType Book :: GetBType (string S)
 {
-  if (S == "FICTION")
-    return FICTION;
-  if (S == "NONFICTION")
-    return NONFICTION;
+    if (S == "FICTION")
+        return FICTION;
+    if (S == "NONFICTION")
+        return NONFICTION;
 } 
 
 string Book :: GetBTypeAsString (BookType S) const
 {
-  if (S == FICTION)
-    return "FICTION";
-  if (S == NONFICTION)
-    return "NONFICTION";
+    if (S == FICTION)
+        return "FICTION";
+    if (S == NONFICTION)
+        return "NONFICTION";
 }
 
 

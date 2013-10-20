@@ -41,14 +41,13 @@ City: Rohnert Park
 State: California
 Zip: 94928
 Phone_Number: 510-301-9066
-Checked_Out: 2  B531    P532
+Checked_Out: 2  B531    P502
 
 Type: BOOK
 Name: Tale of Two Cities
 ID: B531
 Asset_Type: LITERARY
 Author: Charles Dickens
-Copy_Number: 1
 ISBN: 978-1783220731
 Type: FICTION
 Checked_Out_On: 09/13/2013
@@ -77,7 +76,7 @@ City: Rohnert Park
 State: California
 Zip: 94928
 Phone_Number: 916-555-2876
-Checked_Out: 2	B559	P559
+Checked_Out: 2	B550	P550
 
 Type: BOOK
 Name: Brave New World

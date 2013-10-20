@@ -16,68 +16,68 @@ using namespace std;
 
 class Periodical : public Asset
 {
- public:
-  // Enumerated type for Periodical Classification
-  enum PeriodicalType {FICTION, NONFICTION};
-  
-  // The default constructor creates a new periodical object 
-  Periodical ();
-  
-  // This constructor will create a new periodical object identical to the passed periodical object
-  Periodical (const Periodical & S);
-  
-  // This destructor currently does nothing
-  ~Periodical ();
-  
-  // This assignment operator will copy one object to another of the same type
-  Periodical & operator = (const Periodical & S);
-  
-  // The IsA function will return the appropriate LibType value
-  LibType IsA () const;
+    public:
+        // Enumerated type for Periodical Classification
+        enum PeriodicalType {FICTION, NONFICTION};
 
-  //
-  string GetID () const;
+        // The default constructor creates a new periodical object 
+        Periodical ();
 
-  //
-  string GetName () const;
+        // This constructor will create a new periodical object identical to the passed periodical object
+        Periodical (const Periodical & S);
 
-  //
-  vector <Library*> GetCheckedOutBy () ;
+        // This destructor currently does nothing
+        ~Periodical ();
 
-  //
-  vector <string> GetCheckedOutByStr () ;
-  
-  //
-  void SetCheckedOut (Date & D);
+        // This assignment operator will copy one object to another of the same type
+        Periodical & operator = (const Periodical & S);
 
-  //
-  int DaysOverdue (Date today);
+        // The IsA function will return the appropriate LibType value
+        LibType IsA () const;
 
-  //
-  void CheckoutLink (vector <Library *> vB, vector <Library *> vP); //const;
+        //
+        string GetID () const;
 
-  //
-  void Checkout (vector <Library *> V, string str, int count); //const;
-  
-  //
-  void Return (vector <Library *> V, string str, int count);
-  
-  // This function will read in a Periodical object in a standard formatted file. 
-  void ReadIn (istream & input);
-  
-  // This function eill write out a Periodical object in a standard format. 
-  void WriteOut (ostream & output) const;
+        //
+        string GetName () const;
 
-  //
-  vector <Library::Issue> GetIssues ();
-  
- private:
-  Issue I;
-  vector <Library*> CheckedOutByVec;
-  vector <string> CheckedOutByStrVec;
-  string NumIssues;
-  string ISSN;
-  vector <Issue> Issues;
+        //
+        vector <Library*> GetCheckedOutBy () ;
+
+        //
+        vector <string> GetCheckedOutByStr () ;
+
+        //
+        void SetCheckedOut (Date & D);
+
+        //
+        int DaysOverdue (Date today);
+
+        //
+        void CheckoutLink (vector <Library *> vB, vector <Library *> vP); //const;
+
+        //
+        void Checkout (vector <Library *> V, string str, int count); //const;
+
+        //
+        void Return (vector <Library *> V, string str, int count);
+
+        // This function will read in a Periodical object in a standard formatted file. 
+        void ReadIn (istream & input);
+
+        // This function eill write out a Periodical object in a standard format. 
+        void WriteOut (ostream & output) const;
+
+        //
+        vector <Library::Issue> GetIssues ();
+
+    private:
+        Issue I;
+        vector <Library*> CheckedOutByVec;
+        vector <string> CheckedOutByStrVec;
+        string NumIssues;
+        string ISSN;
+        vector <Issue> Issues;
 };
 
 #endif
