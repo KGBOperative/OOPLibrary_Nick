@@ -1,0 +1,34 @@
+Type: MEMBER
+Name: Nick Mahnke
+ID: M145
+Address: 600 Rohnert Park Expy W
+City: Rohnert Park
+State: California
+Zip: 94928
+Phone_Number: 916-555-2876
+Checked_Out: 2	B559	P559
+
+Type: BOOK
+Name: 1984
+ID: B559
+Asset_Type: SCIFI
+Author: George Orwell
+ISBN: 978 0141182957
+Type: FICTION
+Checked_Out_On: 10/12/2013
+Checked_Out_By: M145
+
+Type: PERIODICAL
+Name: Popular Science
+ID: P559
+Asset_Type: LITERARY
+ISSN:  	0161-7370
+Issues: 2
+Volume: 89	Number: 1
+Publication_Date: 01/05/2012
+Checked_Out_On: 08/19/2013
+Checked_Out_By: M145
+Volume: 89	Number: 2
+Publication_Date: 01/12/2012
+Checked_Out_On: 00/00/0000
+Checked_Out_By: NONE

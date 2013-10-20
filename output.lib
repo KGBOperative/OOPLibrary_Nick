@@ -1,0 +1,26 @@
+Type: MEMBER
+Name: Nick Mahnke
+ID: M145
+Address: 600 Rohnert Park Expy W
+City: Rohnert Park
+State: California
+Zip: 94928
+Phone_Number: 916-555-2876
+Checked_Out: NOT YET IMPLEMENTED...
+
+Type: BOOK
+Name: 
+ID: 
+Asset_Type: OTHER
+Author: George Orwell
+ISBN: 978 0141182957
+Type: FICTION
+Checked_Out_On: //
+Checked_Out_By: NOT YET IMPLEMENTED... 
+
+Type: PERIODICAL
+Name: 
+ID: 
+Asset_Type: OTHER
+ISSN:  	0161-7370
+Issues: 2
