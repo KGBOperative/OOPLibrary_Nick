@@ -23,13 +23,13 @@
 
 using namespace std;
 
-vector <Library *> vM; //
-vector <Library *> vB; //
-vector <Library *> vP; //
+vector <Library *> vM;
+vector <Library *> vB;
+vector <Library *> vP;
 
-vector <Library *> vL; //
-vector <Library *> AssetsOverdue; //
-vector <Library *> MembersOverdue; //
+vector <Library *> vL;
+vector <Library *> AssetsOverdue;
+vector <Library *> MembersOverdue;
 
 int Menu();
 void RestoreLibrary();
@@ -49,6 +49,8 @@ void ReportOverdueAssets();
 void ReportAreaCode();
 void DaysOverdueSort (vector <Library*> L);
 bool CompareOverdueAssets (Library* A, Library* B);
+bool isfound (vector <Library *> L, Library * Ptr);
+void OverdueAssets (vector <Library *> vB, vector <Library *> vP);
 
 
 int main ()
@@ -128,7 +130,6 @@ void RestoreLibrary ( )
     if (fin.fail())
     {
         cerr << "File: " << fname << " not found " << endl;
-        //exit (1);
         return;
 
         string choice = "";
@@ -144,67 +145,44 @@ void RestoreLibrary ( )
         }
         if (line == "MEMBER")
         {
-            Member *M = new Member(); //= new Member(); //
-            M->ReadIn(fin); //, vL);
-            vM.push_back(M); // 
+            Member *M = new Member(); 
+            M->ReadIn(fin);
+            Library * l = M;
+            if (!isfound(vM, l))
+                vM.push_back(M);  
             vL.push_back(M);
         }
         else if (line == "BOOK")
         {
-            Book *B = new Book(); // = new Book(); // 
+            Book *B = new Book(); 
             B->ReadIn(fin);
-            vB.push_back(B); // 
-            vL.push_back(B); // 
+            Library * l = B;
+            if (!isfound(vB, l))
+                vB.push_back(B); 
+            vL.push_back(B);  
         }
         else if (line == "PERIODICAL")
         {
-            Periodical *P = new Periodical(); // = new Periodical(); //
+            Periodical *P = new Periodical(); 
             P->ReadIn(fin);
-            vP.push_back(P); //
-            vL.push_back(P); // 
+            Library * l = P;
+            if (!isfound(vP, l))
+                vP.push_back(P); 
+            vL.push_back(P);  
         }
     }
     // will have to do for entire vector <Library *> vL
     for (int i = 0; i < vM.size(); i++)
     {
-        vM[i]->CheckoutLink(vB, vP); 
-        /*for (int j = 0; j < vB.size(); j++)
-
-          for (int k = 0; k < vM[i]->CheckedOutStr.size(); k++)
-          if (vM[i]->CheckedOutStr[k] == vB[j]->GetID())
-          {
-          Book *b = vB[j];
-          vM[i]->CheckedOut.push_back(b);
-          }
-          for (int j = 0; j < vP.size(); j++)
-          for (int k = 0; k < vM[i]->CheckedOutStr.size(); k++)
-          if (vM[i]->CheckedOutStr[k] == vP[j]->GetID())
-          {
-          Periodical *p = vP[j];
-          vM[i]->CheckedOut.push_back(p);
-          }*/
+        vM[i]->CheckoutLink(vB, vP);
     }
     for (int i = 0; i < vB.size(); i++)
     {
         vB[i]->CheckoutLink(vM, vB);
-        /*for (int j = 0; j < vM.size(); j++)
-        //for (int k = 0; k < vM[i].CheckedOutStr.size(); k++)
-        if (vB[i]->CheckedOutByStr == vM[j]->GetID())
-        {
-        Member *m = vM[j];
-        vB[i]->CheckedOutBy = m;
-        }*/
     }
     for (int i = 0; i < vP.size(); i++)
     {
         vP[i]->CheckoutLink(vM, vP);
-        /*for (int j = 0; j < vM.size(); j++)
-          for (int k = 0; k < vP[i].Issues.size(); k++)
-          if (vP[i]->Issues[k]->CheckedOutByStr == vM[j]->GetID())
-          {
-          Member *m = vM[j];
-          vP[i]->Issues[k]->CheckedOutBy = m;
-          }*/
     }
 }
 
@@ -213,7 +191,7 @@ void SaveLibrary()
     string fname;
     cout << "Enter the name of the File you want to save to: ";
     cin >> fname;
-    string filename = fname + ".lib";
+    string filename = fname;
     ofstream fout (filename.c_str());
     for (int i = 0; i < vM.size(); i++)
         vM[i]->WriteOut(fout);
@@ -221,7 +199,6 @@ void SaveLibrary()
         vB[i]->WriteOut(fout);
     for (int i = 0; i < vP.size(); i++)
         vP[i]->WriteOut(fout);
-    //P.WriteOut(fout);
 
 }
 
@@ -240,7 +217,6 @@ void AddCard()
         if (fin.fail())
         {
             cerr << "File: " << fname << " not found " << endl;
-            //exit (1);
 
             string choice = "";
         }
@@ -257,14 +233,15 @@ void AddCard()
             {
                 cerr << "File: " << fname << " is not a Card Holder " << endl;
                 break;
-                //exit (1);
             }
             else 
             {
-                Member *M = new Member(); //= new Member(); //
-                M->ReadIn(fin); //, vL);
-                vM.push_back(M); // 
-                vL.push_back(M); // 
+                Member *M = new Member();
+                M->ReadIn(fin); 
+                Library * l = M;
+                if (!isfound(vM, l))
+                    vM.push_back(M);
+                vL.push_back(M);
             }
         }
     }
@@ -312,14 +289,28 @@ void AddCard()
         temp.clear();
 
         Member *M = new Member();
+        Library * l = M;
         M->ReadIn(Ins);
-        vM.push_back(M);
+        if (!isfound(vM, l))
+            vM.push_back(M);
         vL.push_back(M);
     }
     else {
-        cout << "That was not an option. Please try again. ";
+        cout << "That was not an option. Please try again. \n";
         AddCard();
     }
+    /*for (int i = 0; i < vM.size(); i++)
+      {
+      vM[i]->CheckoutLink(vB, vP);
+      }
+      for (int i = 0; i < vB.size(); i++)
+      {
+      vB[i]->CheckoutLink(vM, vB);
+      }
+      for (int i = 0; i < vP.size(); i++)
+      {
+      vP[i]->CheckoutLink(vM, vP);
+      }*/ // will have to do link after adding card
 }
 
 void RemoveCard()
@@ -327,13 +318,12 @@ void RemoveCard()
     string forget;
     string remove;
     string check = "";
-    /*for (int i = 0; i < vM.size(); i++)
-      {
-      cout << "Name: " << vM[i]->GetName() << "\tID: " << vM[i]->GetID() << endl;
-      }*/
+    Date ret = Date();
+    vector <Library::Issue> issues;
+
     cout << "Enter the ID of the Card you want to remove: ";
     getline (cin, check); //remove;
-    cout << check;
+    //cout << check;
     /*locale loc;
       for (int i = 0; i < remove.length(); i++)
       check = tolower(remove[i], loc);*/
@@ -341,9 +331,25 @@ void RemoveCard()
     {
         for (int i = 0; i < vM.size(); i++) {
             if (vM[i]->GetID() == check) {
+                /*for (int j = 0; j < vB.size(); j++)
+                  if (check == vB[j]->GetCheckedOutBy()[0]->GetID() && vB[j]->GetCheckedOutByStr()[0] != "NONE") 
+                  {
+                //vM[memcount]->Return(vB, asset, assetcount);
+                vB[j]->Return(vM, check, i); 
+                vB[j]->SetCheckedOut(ret);
+                }
+                for (int j = 0; j < vP.size(); j++)
+                {
+                issues = vP[j]->GetIssues();
+                for (int k = 0; k < issues.size(); k++)
+                if (issues[k].CheckedOutBy->GetID() == check && issues[k].CheckedOutBy != NULL)
+                {
+                vP[j]->Return(vM, issues[k].CheckedOutBy->GetID(), i); 
+                issues[k].SetCheckedOutIssue(ret);
+                }
+                }*/ // Get return to work for removed cards
                 vM.erase (vM.begin()+i);
             }
-            //cout << vM[i]->GetName();
         }
     }
     else
@@ -359,7 +365,7 @@ void AddAsset()
     cout << "Would you like to add from a file (1) or manually (2)? ";
     cin >> choice;
     if (choice == "1" || choice == "file" || choice == "File" || choice == "FILE") {
-        cout << "\nEnter the name of the File you want to add: ";
+        cout << "Enter the name of the File you want to add: ";
         cin >> fname;
         ifstream fin;
         fin.open(fname.c_str(), ifstream::in);
@@ -367,8 +373,6 @@ void AddAsset()
         if (fin.fail())
         {
             cerr << "File: " << fname << " not found " << endl;
-            //exit (1);
-
             string choice = "";
         }
 
@@ -384,26 +388,28 @@ void AddAsset()
             {
                 cerr << "File: " << fname << " is not an Asset" << endl;
                 break;
-                //exit (1);
             }
             else if (line == "BOOK")
             {
-                Book *B = new Book(); // = new Book(); // 
+                Book *B = new Book();
                 B->ReadIn(fin);
-                vB.push_back(B); // 
-                vL.push_back(B); // 
+                Library *l = B;
+                if (!isfound(vB, l))
+                    vB.push_back(B); 
+                vL.push_back(B);  
             }
             else if (line == "PERIODICAL")
             {
-                Periodical *P = new Periodical(); // = new Periodical(); //
+                Periodical *P = new Periodical(); 
                 P->ReadIn(fin);
-                vP.push_back(P); //
-                vL.push_back(P); // 
+                Library *l = P;
+                if (!isfound(vP, l))
+                    vP.push_back(P); 
+                vL.push_back(P);  
             }
         }
     }
     else if (choice == "2" || choice == "manually" || choice == "Manually" || choice == "MANUALLY" || choice == "manual" || choice == "Manual" || choice == "MANUAL") {
-        //getline (cin, endLineClear);
         cout << "\nBook (1) or Periodical (2): ";
         temp.clear();
         cin >> temp;
@@ -453,7 +459,9 @@ void AddAsset()
 
             Book *B = new Book();
             B->ReadIn(Ins);
-            vB.push_back(B);
+            Library *l = B;
+            if (!isfound(vB, l))
+                vB.push_back(B);
             vL.push_back(B);
         }
         else if (temp == "2" || temp == "periodical" || temp == "Periodical" || temp == "PERIODICAL") 
@@ -517,40 +525,37 @@ void AddAsset()
 
             Periodical *P = new Periodical();
             P->ReadIn(Ins);
-            vP.push_back(P);
+            Library *l = P;
+            if (!isfound(vP, l))
+                vP.push_back(P);
             vL.push_back(P);
         }
     }
     else {
-        cout << "That was not an option. Please try again. ";
+        cout << "That was not an option. Please try again. \n";
         AddAsset();
     }
+    /*for (int i = 0; i < vM.size(); i++)
+      {
+      vM[i]->CheckoutLink(vB, vP);
+      }
+      for (int i = 0; i < vB.size(); i++)
+      {
+      vB[i]->CheckoutLink(vM, vB);
+      }
+      for (int i = 0; i < vP.size(); i++)
+      {
+      vP[i]->CheckoutLink(vM, vP);
+      }*/ // will have to do link after adding assets
 }
 
 void RemoveAsset()
 {
-    /*string check = "";
-      cout << "Enter the name of the Asset you want to remove: ";
-      getline (cin, check); //remove;
-      for (int i = 0; i < vB.size(); i++) {
-      if (vB[i].RemoveCard(check))
-      vB.erase (vB.begin()+i);
-      }
-      for (int i = 0; i < vP.size(); i++) {
-      if (vP[i].RemoveCard(check))
-      vP.erase (vP.begin()+i);
-      }*/ // create bool RemoveCard functions for Book and Periodical <-- Ultimately do on vector <Library> vL
+    // create bool RemoveCard functions for Book and Periodical <-- Ultimately do on vector <Library> vL
     string check = "";
     string choice = "";
-    //cout << "Do you want to remove a Book (1) or Periodical (2)? ";
-    //cin >> choice;
-    //if (choice == "1" || choice == "book" || choice == "Book" || choice == "BOOK") {
-    /*for (int i = 0; i < vB.size(); i++) {
-      cout << "Name: " << vB[i]->GetName() << "\tID: " << vB[i]->GetID() << endl;
-      }
-      for (int i = 0; i < vP.size(); i++) {
-      cout << "Name: " << vP[i]->GetName() << "\tID: " << vP[i]->GetID() << endl;
-      }*/
+    int memcount = 0;
+    Date ret = Date();
     cout << "Enter the ID of the Asset you want to remove: ";
     getline (cin, check); //remove;
     //cout << check;
@@ -561,8 +566,13 @@ void RemoveAsset()
     {
         for (int i = 0; i < vB.size(); i++) {
             if (vB[i]->GetID() == check) {
+                for (int j = 0; j < vM.size(); j++)
+                    if (vB[i]->GetCheckedOutBy()[0]->GetID() == vM[j]->GetID())
+                        memcount = j;
+                vM[memcount]->Return(vB, vB[i]->GetID(), i);
+                //vB[i]->Return(vM, vB[i]->GetCheckedOutBy()[0]->GetID(), memcount); 
+                //vB[i]->SetCheckedOut(ret);
                 vB.erase (vB.begin()+i);
-                //cout << vB[i]->GetName();
             }
         }
     }
@@ -570,6 +580,17 @@ void RemoveAsset()
     {
         for (int i = 0; i < vP.size(); i++) {
             if (vP[i]->GetID() == check) {
+                vector <Library::Issue> issues;
+                issues = vP[i] -> GetIssues();
+                for (int j = 0; j < vM.size(); j++)
+                    for (int k = 0; k < issues.size(); k++)
+                        if (issues[k].CheckedOutBy != NULL && issues[k].CheckedOutBy->GetID() == vM[j]->GetID())
+                        {
+                            memcount = j;
+                            vM[memcount]->Return(vP, vP[i]->GetID(), i);
+                            //vP[i]->Return(vM, issues[k].CheckedOutBy->GetID(), memcount); 
+                            //issues[k].SetCheckedOutIssue(ret);
+                        }
                 vP.erase (vP.begin()+i);
             }
         }
@@ -577,22 +598,6 @@ void RemoveAsset()
     else
         cout << "That Asset ID does not exist. \n";
 }
-/*
-   Date GetCurrentDate ()
-   {
-   time_t theTime = time(NULL);
-   struct tm *aTime = localtime(&theTime);
-
-   int cDay = aTime->tm_mday;
-   int cMonth = aTime->tm_mon + 1;
-   int cYear = aTime->tm_year + 1900;
-   Date today = Date ();
-   today.SetDay(cDay);
-   today.SetMonth(cMonth);
-   today.SetYear(cYear);
-//today.WriteOutNum(cout, 1);
-return today;
-}*/
 
 Date GetCurrentDate ()
 {
@@ -605,83 +610,79 @@ Date GetCurrentDate ()
     stringstream temp;
     temp.str(buffer);
 
-    /*int cDay = aTime->tm_mday;
-      int cMonth = aTime->tm_mon + 1;
-      int cYear = aTime->tm_year + 1900;*/
     Date today;
     today.ReadIn(temp);
-    //string today;
-    /*today.SetDay(cDay);
-      today.SetMonth(cMonth);
-      today.SetYear(cYear);*/
-    //strftime (buffer, 80, "%m/%d/%Y", aTime);
-    //string temp =  buffer;
-    //cout << today;
-    //temp.WriteOutNum(cout, 1);
-    //today.WriteOut(cout);
     return today;
 }
 
+bool isfound (vector <Library *> L, Library * Ptr)
+{
+    //cout << "inside isfound\n";
+    for (int i = 0; i < L.size(); i++) {
+        //cout << "comparing " << L[i]->GetID() << " to " << Ptr->GetID() << endl;
+        if (L[i]->GetID() == Ptr->GetID()) {
+            //cout << Ptr->GetID() << " was found at i = " << i << endl;
+            return true;
+        }
+    }
+    //cout << Ptr->GetID() << " was not found\n";
+    return false;
+}
 
 void OverdueAssets (vector <Library *> vB, vector <Library *> vP)
 {
 
     Date coDate;
     Date today = GetCurrentDate();
+    vector <Library::Issue> issues;
     vector <Library*> COB;
     int NumDaysOverdue;
     for (int i = 0; i < vB.size(); i++)
     {
-        // get this to work or use GetCheckedOut, find way to return Date or int
+        //cout << "Checking books\n";
         NumDaysOverdue = vB[i]->DaysOverdue(today);
         if (NumDaysOverdue > 0) 
         {
-            //Library *b = vB[i];
-            COB = vB[i]->GetCheckedOutBy();
-            //Library *m = COB[0];//-> GetCheckedOutBy(); 
-            //cout << vB[i];//-> GetCheckedOutBy();
-
-            AssetsOverdue.push_back(vB[i]);
-            MembersOverdue.push_back(vB[i]->GetCheckedOutBy()[0]);
-        }
-        // push information to vector of Overdue Assets or print out Name, ID, DaysOverdue, and CheckedOutBy ID 
+            if (!isfound(AssetsOverdue, vB[i]))
+                AssetsOverdue.push_back(vB[i]);
+            if (!isfound(MembersOverdue, vB[i]->GetCheckedOutBy()[0])) {
+                //cout << "pushing member " << vB[i]->GetCheckedOutBy()[0]->GetID() << " to the list\n";
+                MembersOverdue.push_back(vB[i]->GetCheckedOutBy()[0]);
+            }
+        } 
     }
-
     for (int i = 0; i < vP.size(); i++) 
     {
-        vector <Library::Issue> issues = vP[i]->GetIssues();
-        for (int j = 0; j < vP[i]->GetIssues().size(); j++)
+        //cout << "Checking periodicals\n";
+        issues = vP[i]->GetIssues();
+        //cout << "Creating issues\n";
+        for (int j = 0; j < issues.size(); j++)
         {
-            if (vP[i]->GetIssues()[j].DaysOverdue(today) > 0)
+            //cout << "Checking issues\n";
+            NumDaysOverdue = issues[j].DaysOverdue(today); 
+            if (NumDaysOverdue > 0)
             {
-                debug << vP[i]->GetIssues()[j].CheckedOutByStr << " == " << vP[i]->GetIssues()[j].CheckedOutBy << endl;
                 Library *p = vP[i];
-                Library *m = vP[i]->GetIssues()[j].CheckedOutBy; 
-                if (m == NULL) {
-                    debug << "found NULL CheckedOutBy member in issue " << j+1 << ":\n";
-                    debug << "it is overdue by " << vP[i]->GetIssues()[j].DaysOverdue(today) << " days\n";
-                    p->WriteOut(cout);
+                Library *m = issues[j].CheckedOutBy;
+                if (!isfound(AssetsOverdue, p))
+                    AssetsOverdue.push_back(p);
+                if (!isfound(MembersOverdue, m)) {
+                    //cout << "pushing member " << m->GetID() << " to the list\n";
+                    MembersOverdue.push_back(m);
                 }
-                //cout << vP[i]-> GetCheckedOutBy(); 
-                AssetsOverdue.push_back(p);
-                MembersOverdue.push_back(m);
             }
         }
-        // push information to vector of Overdue Assets or print out Name, ID, DaysOverdue, and CheckedOutBy ID 
     }
-
-    //  for (int i = 0; i < MembersOverdue.size(); i++)
-    //MembersOverdue[i]->WriteOut(cout);
-
 }
+//  for (int i = 0; i < MembersOverdue.size(); i++)
+//MembersOverdue[i]->WriteOut(cout);
+
 
 void CheckoutAsset()
 { // Needs to check if Asset is already checkedout, needs to check which issue for periodical, should print list of mems, assets
-    string member, asset;
+    string member, asset, vol, volume;
     bool found = false;
     Date today = GetCurrentDate();
-    //string test = GetCurrentDateStr();
-    //today.WriteOutNum(cout, 1);
     int memcount = 0;
     int assetcount = 0;
     cout << "Enter the ID of Member who is checking out an Asset: ";
@@ -700,33 +701,66 @@ void CheckoutAsset()
     found = false;
     cout << "Enter the ID of the Asset: ";
     cin >> asset;
-    for (int i = 0; i < vB.size(); i++) {
-        if (asset == vB[i]->GetID()) {
+    vector <Library::Issue>  issues;
+    bool memberhas = false;
+    for (int i = 0; i < vB.size(); i++)
+    {
+        if (asset == vB[i]->GetID() && vB[i]->GetCheckedOutBy()[0] == NULL)
+        {
             found = true;
+            //if (vM[memcount]->GetID() == vB[assetcount]->GetCheckedOutByStr()[0])
+            //{
+            memberhas = true;
             vM[memcount]->Checkout(vB, asset, assetcount);
             vB[assetcount]->Checkout(vM, member, memcount);
             vB[assetcount]->SetCheckedOut(today);
             break;
+            //}
         }
         assetcount++;
     }
-    if (found == false) {
+    if (found == false) 
+    {
         assetcount = 0;
-        for (int i = 0; i < vP.size(); i++) {
-            if (asset == vP[i]->GetID()) {
+        for (int i = 0; i < vP.size(); i++)
+        {
+            issues = vP[i]->GetIssues();
+            if (asset == vP[i]->GetID())
+            {
                 found == true;
-                vM[memcount]->Checkout(vP, asset, assetcount);
-                vP[assetcount]->Checkout(vM, member, memcount);
-                vP[assetcount]->SetCheckedOut(today);
-                break;
+                for (int j = 0; j < issues.size(); j++)
+                    if (issues[j].CheckedOutBy == NULL)
+                    {
+                        /*cout << "Which Volume are they checking out: ";
+                          cin >> vol;*/
+                        //if (vM[memcount]->GetID() == issues[j].CheckedOutByStr)
+                        //{
+                        //isse = atoi(iss.c_str());
+                        /*if (issues[j].GetVolume() == vol)
+                          {*/
+                        memberhas = true;
+                        vM[memcount]->Checkout(vP, asset, assetcount);
+                        vP[assetcount]->Checkout(vM, member, memcount);
+                        vP[assetcount]->SetCheckedOut(today);
+                        break;
+                        //}
+                        //}
+                    }
             }
-            assetcount++;
         }
+        assetcount++;
     }
-    if (found == false) {
+    if (found == false)
+    {
         cout << "That Asset ID does not exist. " << endl;
         return;
     }
+    if (!memberhas)
+    { 
+        cout << "That Asset is already checked out! " << endl;
+        return;
+    }
+
     // Create functions in classes and set CheckedOutStr to asset, vM[memcount]->CheckedOut push back pointer to vB[assetcount]
     // or vP[assetcount], vB or vP[assetcount]->CheckedOutByStr to member, vBor vP[assetcount]->CheckedOutBy push back
     // pointer to vM[memcount], setFunction vB or vP->CheckedOutOn to today
@@ -739,11 +773,10 @@ void ReturnAsset()
     string member, asset;
     bool found = false;
     Date ret = Date();
-    //string test = GetCurrentDateStr();
-    //today.WriteOutNum(cout, 1);
     int memcount = 0;
     int assetcount = 0;
-    cout << "Enter the ID of Member who is checking out an Asset: ";
+
+    cout << "Enter the ID of Member who is returning an Asset: ";
     cin >> member;
     for (int i = 0; i < vM.size(); i++) {
         if (member == vM[i]->GetID()) {
@@ -756,16 +789,24 @@ void ReturnAsset()
         cout << "That Member ID does not exist. " << endl;
         return;
     }
+
     found = false;
     cout << "Enter the ID of the Asset: ";
     cin >> asset;
     for (int i = 0; i < vB.size(); i++) {
         if (asset == vB[i]->GetID()) {
             found = true;
-            vM[memcount]->Return(vB, asset, assetcount); // implement Return in each class to do opposite of Checkout
-            vB[assetcount]->Return(vM, member, memcount); // check that asset is indeed checkedout by member
-            vB[assetcount]->SetCheckedOut(ret);
-            break;
+            if (vM[memcount]->GetID() == vB[assetcount]->GetCheckedOutBy()[0] -> GetID())
+            {
+                vM[memcount]->Return(vB, asset, assetcount);
+                vB[assetcount]->Return(vM, member, memcount); 
+                vB[assetcount]->SetCheckedOut(ret);
+                break;
+            }
+            else 
+            {
+                cout << "That Member has not checked out that Asset!" << endl;
+            }
         }
         assetcount++;
     }
@@ -774,10 +815,24 @@ void ReturnAsset()
         for (int i = 0; i < vP.size(); i++) {
             if (asset == vP[i]->GetID()) {
                 found == true;
-                vM[memcount]->Return(vP, asset, assetcount);
-                vP[assetcount]->Return(vM, member, memcount);
-                vP[assetcount]->SetCheckedOut(ret);
-                break;
+                vector <Library::Issue> issues;
+                issues = vP[i] -> GetIssues();
+                bool memberhas = false;
+                for (int j = 0; j <issues.size(); j++)
+                {
+                    if (vM[memcount]->GetID() == issues[j].CheckedOutByStr)
+                    {
+                        vM[memcount]->Return(vP, asset, assetcount);
+                        vP[assetcount]->Return(vM, member, memcount);
+                        vP[assetcount]->SetCheckedOut(ret);
+                        memberhas = true;
+                        break;
+                    }
+                }
+                if (!memberhas)
+                {
+                    cout << "That Member has not checked out that Asset!" << endl;
+                }
             }
             assetcount++;
         }
@@ -837,6 +892,7 @@ void ReportMembersOverdue()
 {
     char choice;
     Date today = GetCurrentDate();
+    int count;
     cout << "Do you want your report in a file(1) or on the screen(2)? : ";
     cin >> choice;
 
@@ -853,28 +909,116 @@ void ReportMembersOverdue()
         fout << endl << endl;
         for (int i = 0; i < MembersOverdue.size(); i++)
         {
-            //MembersOverdue[i]->WriteOut(fout);
-            if (MembersOverdue[i] != NULL) {
-                debug << "looking at member " << MembersOverdue[i] << endl;
-                fout << "\t" << "Assets Overdue Count: " << AssetsOverdue.size() << endl;
+            if (MembersOverdue[i] != NULL)
+            {
+                count = 0;
+                MembersOverdue[i]->WriteOut(fout);
+                vector <Library *> checkedout;
+                checkedout = MembersOverdue[i]->GetCheckedOutVec();
+                for (int i = 0; i < checkedout.size(); i++)
+                    if (isfound(AssetsOverdue, checkedout[i]))
+                        count++;
+                fout << "\t" << "Assets Overdue Count: " << count << endl;
                 for (int j = 0; j < AssetsOverdue.size(); j++)
                 {
-                    if (AssetsOverdue[j]->GetID() == MembersOverdue[i]->GetID())
-                    {
-                        fout << "/t"  << AssetsOverdue[j]->GetID() << ": ";
-                        fout << AssetsOverdue[j]->GetName() << "/t";
-                        fout << "Days Overdue: " <<  AssetsOverdue[j]->DaysOverdue(today) << endl;
+                    for (int k = 0; k < checkedout.size(); k++) {
+                        if (AssetsOverdue[j]->GetID() == checkedout[k]->GetID()) 
+                        {
+                            if (AssetsOverdue[j]->IsA() == Library::BOOK)
+                            {
+                                fout << "\t"  << AssetsOverdue[j]->GetID() << ": ";
+                                fout << setw (18) << left << AssetsOverdue[j]->GetName() << "\t";
+                                fout << "Days Overdue: " <<  AssetsOverdue[j]->DaysOverdue(today) << endl;
+                            }
+                            else 
+                            {
+                                vector <Library::Issue> issues;
+                                issues = AssetsOverdue[j]->GetIssues();
+                                for (int z = 0; z < issues.size(); z++)
+                                    if (issues[z].DaysOverdue(today) > 0 && !issues[z].CheckedOut.IsNull())
+                                    {
+                                        fout << "\t"  << AssetsOverdue[j]->GetID() << ": ";
+                                        fout << setw (18) << left << AssetsOverdue[j]->GetName() << "\t";
+                                        fout << "Days Overdue: " <<  issues[z].DaysOverdue(today) << endl;
+                                    }
+                            }
+                        }
                     }
                 }
+                fout << endl;
+                /*MembersOverdue[i]->WriteOut(fout);
+                  vector <Library *> checkedout;
+                  checkedout = MembersOverdue[i]->GetCheckedOutVec();
+                  fout << "\t" << "Assets Overdue Count: " << checkedout.size() << endl;
+                  for (int j = 0; j < AssetsOverdue.size(); j++)
+                  {
+                  for (int k = 0; k < checkedout.size(); k++) {
+                  if (AssetsOverdue[j]->GetID() == checkedout[k]->GetID()) //MembersOverdue[i]->GetID())//checkedout[i]) // return CheckedOut vector
+                  {
+                  fout << "/t"  << AssetsOverdue[j]->GetID() << ": ";
+                  fout << AssetsOverdue[j]->GetName() << "/t";
+                  fout << "Days Overdue: " <<  AssetsOverdue[j]->DaysOverdue(today) << endl;
+                  }
+                  }
+                  }*/
             }
-            else {
-                debug << "Member " << i << " is NULL\n";
-            }
-        }
 
+            else 
+            {
+            }
+
+        }
     }
     else if (choice == '2')
     {
+        cout << "\nMembers with Overdue Assets \t\t Today's Date: ";
+        today.WriteOut(cout);
+        cout << endl << endl;
+        for (int i = 0; i < MembersOverdue.size(); i++)
+        {
+            if (MembersOverdue[i] != NULL)
+            {
+                count = 0;
+                MembersOverdue[i]->WriteOut(cout);
+                vector <Library *> checkedout;
+                checkedout = MembersOverdue[i]->GetCheckedOutVec();
+                for (int i = 0; i < checkedout.size(); i++)
+                    if (isfound(AssetsOverdue, checkedout[i]))
+                        count++;
+                cout << "\t" << "Assets Overdue Count: " << count << endl;
+                for (int j = 0; j < AssetsOverdue.size(); j++)
+                {
+                    for (int k = 0; k < checkedout.size(); k++) {
+                        if (AssetsOverdue[j]->GetID() == checkedout[k]->GetID()) 
+                        {
+                            if (AssetsOverdue[j]->IsA() == Library::BOOK)
+                            {
+                                cout << "\t"  << AssetsOverdue[j]->GetID() << ": ";
+                                cout << setw (18) << left << AssetsOverdue[j]->GetName() << "\t";
+                                cout << "Days Overdue: " <<  AssetsOverdue[j]->DaysOverdue(today) << endl;
+                            }
+                            else 
+                            {
+                                vector <Library::Issue> issues;
+                                issues = AssetsOverdue[j]->GetIssues();
+                                for (int z = 0; z < issues.size(); z++)
+                                    if (issues[z].DaysOverdue(today) > 0 && !issues[z].CheckedOut.IsNull())
+                                    {
+                                        cout << "\t"  << AssetsOverdue[j]->GetID() << ": ";
+                                        cout << setw (18) << left << AssetsOverdue[j]->GetName() << "\t";
+                                        cout << "Days Overdue: " <<  issues[z].DaysOverdue(today) << endl;
+                                    }
+                            }
+                        }
+                    }
+                }
+                cout << endl;
+            }
+            else 
+            {
+            }
+
+        }
         return;
     }
 
@@ -900,18 +1044,26 @@ void ReportOverdueAssets()
 
         fout << "Overdue Assets \t\t Today's Date: ";
         today.WriteOut(fout);
-        fout << endl << endl;
+        fout << endl << endl ;
         for (int i = 0; i < AssetsOverdue.size(); i++)
         {
             if (AssetsOverdue[i]->IsA() == Library::BOOK)
             {
-                type = "BOOK";
-                fout << "Type: " << type << endl;
-                fout << "Asset Name: " << AssetsOverdue[i] -> GetName() << endl;
-                fout << "Days Overdue: " << AssetsOverdue[i] -> DaysOverdue(today) << endl;
-                fout << "ID: " << AssetsOverdue[i] -> GetID() << endl;
-                fout << "Name: " << AssetsOverdue[i] -> GetCheckedOutBy()[0] -> GetName() <<
-                    endl << endl;
+                if (AssetsOverdue[i]->GetCheckedOutBy()[0] != NULL)
+                {
+                    /*Library *b = new Book();
+                      b = AssetsOverdue[i];
+                      if (!b->CheckedOut.IsNULL())
+                      {*/
+                    type = "BOOK";
+                    fout << "\nType: " << type << endl;
+                    fout << "Asset Name: " << AssetsOverdue[i] -> GetName() << endl;
+                    fout << "Days Overdue: " << AssetsOverdue[i] -> DaysOverdue(today) << endl;
+                    fout << "ID: " << AssetsOverdue[i] -> GetID() << endl;
+                    fout << "Name: " << AssetsOverdue[i] -> GetCheckedOutBy()[0] -> GetName() <<
+                        endl << endl;
+                    //}
+                }
             }
             else
             {
@@ -922,11 +1074,14 @@ void ReportOverdueAssets()
                     issues = AssetsOverdue[i]->GetIssues();
                     if (issues[j].DaysOverdue(today) > 0 && issues[j].CheckedOutBy != NULL)
                     {
-                        fout << "Type: " << type << endl;
-                        fout << "Asset Name: " << AssetsOverdue[i] -> GetName() << endl;
-                        fout << "Days Overdue: " << issues[j].DaysOverdue(today) << endl; 
-                        fout << "ID: " << AssetsOverdue[i] -> GetID() << endl;
-                        fout << "Name: " << issues[j].CheckedOutBy -> GetName() << endl << endl;
+                        if (!issues[j].CheckedOut.IsNull())
+                        {
+                            fout << "\nType: " << type << endl;
+                            fout << "Asset Name: " << AssetsOverdue[i] -> GetName() << endl;
+                            fout << "Days Overdue: " << issues[j].DaysOverdue(today) << endl; 
+                            fout << "ID: " << AssetsOverdue[i] -> GetID() << endl;
+                            fout << "Name: " << issues[j].CheckedOutBy -> GetName() << endl << endl;
+                        }
                     }
                 }
             }
@@ -937,32 +1092,38 @@ void ReportOverdueAssets()
     }
     else if (choice == '2')
     {
+        cout << "\nOverdue Assets \t\t Today's Date: ";
+        today.WriteOut(cout);
+        cout << endl << endl;
         for (int i = 0; i < AssetsOverdue.size(); i++)
         {
-            if (AssetsOverdue[i]->IsA() == Library::BOOK)
+            if (AssetsOverdue[i] != NULL)
             {
-                type = "BOOK";
-                cout << "Type: " << type << endl;
-                cout << "Asset Name: " << AssetsOverdue[i] -> GetName() << endl;
-                cout << "Days Overdue: " << AssetsOverdue[i] -> DaysOverdue(today) << endl;
-                cout << "ID: " << AssetsOverdue[i] -> GetID() << endl;
-                cout << "Name: " << AssetsOverdue[i] -> GetCheckedOutBy()[0] -> GetName() <<
-                    endl << endl;
-            }
-            else
-            {
-                type = "PERIODICAL";
-                vector <Library::Issue> issues;
-                for (int j = 0; j < AssetsOverdue[i]->GetIssues().size(); j++)
+                if (AssetsOverdue[i]->IsA() == Library::BOOK)
                 {
-                    issues = AssetsOverdue[i]->GetIssues();
-                    if (issues[j].DaysOverdue(today) > 0 && issues[j].CheckedOutBy != NULL)
+                    type = "BOOK";
+                    cout << "Type: " << type << endl;
+                    cout << "Asset Name: " << AssetsOverdue[i] -> GetName() << endl;
+                    cout << "Days Overdue: " << AssetsOverdue[i] -> DaysOverdue(today) << endl;
+                    cout << "ID: " << AssetsOverdue[i] -> GetID() << endl;
+                    cout << "Name: " << AssetsOverdue[i] -> GetCheckedOutBy()[0] -> GetName() <<
+                        endl << endl;
+                }
+                else
+                {
+                    type = "PERIODICAL";
+                    vector <Library::Issue> issues;
+                    for (int j = 0; j < AssetsOverdue[i]->GetIssues().size(); j++)
                     {
-                        cout << "Type: " << type << endl;
-                        cout << "Asset Name: " << AssetsOverdue[i] -> GetName() << endl;
-                        cout << "Days Overdue: " << issues[j].DaysOverdue(today) << endl; 
-                        cout << "ID: " << AssetsOverdue[i] -> GetID() << endl;
-                        cout << "Name: " << issues[j].CheckedOutBy -> GetName() << endl << endl;
+                        issues = AssetsOverdue[i]->GetIssues();
+                        if (issues[j].DaysOverdue(today) > 0 && issues[j].CheckedOutBy != NULL)
+                        {
+                            cout << "Type: " << type << endl;
+                            cout << "Asset Name: " << AssetsOverdue[i] -> GetName() << endl;
+                            cout << "Days Overdue: " << issues[j].DaysOverdue(today) << endl; 
+                            cout << "ID: " << AssetsOverdue[i] -> GetID() << endl;
+                            cout << "Name: " << issues[j].CheckedOutBy -> GetName() << endl << endl;
+                        }
                     }
                 }
             }
@@ -990,7 +1151,7 @@ void ReportAreaCode()
         ofstream fout (filename.c_str());
 
         string areacode;
-        cout << "What area code do you want to see? : " << endl;
+        cout << "What area code do you want to see? : ";
         cin >> areacode;
         fout << "Members in " << areacode << endl;
         fout << "Generated on: ";
@@ -998,7 +1159,7 @@ void ReportAreaCode()
         fout  << endl;
         fout << "---------------------------------------------------" << endl;
         fout << setw(6) << left << "ID" << setw(22) << left << "Name" << setw(14) << left 
-            << "Phone Number" << endl;
+            << "Phone Number" << endl << endl;
         for (int i = 0; i < vM.size(); i++)
             if (areacode == vM[i]->GetPhone().substr(0,3))
                 fout << setw(4) << left << vM[i]->GetID() << "  " << setw(20) 
@@ -1008,14 +1169,14 @@ void ReportAreaCode()
     if (choice == '2')
     {
         string areacode;
-        cout << "What area code do you want to see? : " << endl;
+        cout << "What area code do you want to see? : ";
         cin >> areacode;
-        cout << "Members in " << areacode << endl;
+        cout << "\nMembers in " << areacode << endl;
         cout << "Generated on: ";
         today.WriteOut(cout);
         cout << endl;
         cout << "---------------------------------------------------" << endl;
-        cout << setw(6) << left << "ID" << setw(22) << "Name" << setw(14) << "Phone Number" << endl; 
+        cout << setw(6) << left << "ID" << setw(22) << "Name" << setw(14) << "Phone Number" << endl << endl; 
         for (int i = 0; i < vM.size(); i++)
             if (areacode == vM[i]->GetPhone().substr(0,3))
                 cout << setw(4) << left << vM[i]->GetID() << "  " << setw(20) << vM[i]->GetName() 
@@ -1038,6 +1199,7 @@ void Quit ()
         if (choice == "y" || choice == "Y" || choice == "yes" || choice == "Yes" || choice == "YES")
         {
             SaveLibrary();
+            exit(0);
             cont = false;
         }
         else if (choice == "n" || choice == "N" || choice == "no" || choice == "No" || choice == "NO")
