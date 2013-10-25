@@ -8,9 +8,6 @@
 
 using namespace std;
 
-// Hopefully not necessary...
-enum LibType {LIBRARY, MEMBER, ASSET, BOOK, PERIODICAL};
-
 // The default constructor creates a new library object 
 Library::Library () 
 {
@@ -36,8 +33,7 @@ Library & Library::operator = (const Library & S)
 // The IsA function will return the appropriate LibType value
 Library :: LibType Library :: IsA () const
 {
-    LibType temp = LIBRARY;
-    return temp;
+    return LIBRARY;
 }
 
 string Library :: GetID () const
@@ -57,14 +53,12 @@ string Library :: GetName () const
 
 vector <Library*> Library :: GetCheckedOutBy () const
 {
-    vector <Library*> V;
-    return V;
+    return vector <Library*>();
 } 
 
 vector <string> Library :: GetCheckedOutByStr () const
 {
-    vector <string> V;
-    return V;
+    return vector <string>();
 } 
 
 
@@ -82,8 +76,7 @@ void Library :: Issue :: SetCheckedOutIssue (Date & D)
 
 int Library :: DaysOverdue (Date today)
 {
-    int NumDaysOverdue = 0;
-    return NumDaysOverdue;
+    return 0;
 }
 
 //
@@ -153,19 +146,10 @@ string Library :: Issue :: GetVolume () const
 //
 int Library :: Issue :: DaysOverdue(Date today)
 {
-    int NumDaysOverdue;
-    Date N;
-    N.SetDay(00);
-    N.SetMonth(00);
-    N.SetYear(0000);
     if (CheckedOut.IsNull())
         return 0;
-    if (CheckedOut - N > 0)
-    {
-        NumDaysOverdue = (today - CheckedOut) - 7;
-        return NumDaysOverdue;
-    }
-    return 0;
+
+    return (today - CheckedOut) - 7;
 }
 
 

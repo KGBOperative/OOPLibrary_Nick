@@ -91,28 +91,12 @@ int Menu ()
     cout << "\t0. Quit\n";
 
     cin >> selection;
-    string forget;
-    getline (cin, forget);
+    cin.ignore(256, '\n');
 
-    if (selection == '1')
-        return 1;
-    if (selection == '2')
-        return 2;
-    if (selection == '3')
-        return 3;
-    if (selection == '4')
-        return 4;
-    if (selection == '5')
-        return 5;
-    if (selection == '6')
-        return 6;
-    if (selection == '7')
-        return 7;
-    if (selection == '8')
-        return 8;
-    if (selection == '9')
-        return 9;
-    if (selection == '0' || selection == 'q')
+    int sel = selection - '0';
+    if (sel >= 0 && sel <= 9)
+        return sel;
+    else if (selection == 'q')
         return 0;
     else 
         cout << "Invalid input\n";
@@ -622,41 +606,77 @@ bool isfound (vector <Library *> L, Library * Ptr)
 }
 
 void OverdueAssets () {
+    debug << "Entering OverdueAssets\n";
     Date today = GetCurrentDate();
 
     for (int i = 0; i < vL.size(); i++)
     {
-        vector <Library::Issue> issues = vL[i]->GetIssues();
+        if (vL[i] == NULL) {
+            debug << "vL[" << i << "] is NULL\n";
+            break;
+        }
+        if (vL[i]->IsA() != Library::MEMBER) {
+            vector <Library::Issue> issues = vL[i]->GetIssues();
 
-        if (issues.size() > 0) {
-            for (int j = 0; j < issues.size(); j++)
-            {
-                if (issues[j].DaysOverdue(today) > 0); 
+            if (issues.size() > 0) {
+                for (int j = 0; j < issues.size(); j++)
                 {
-                    Library *p = vL[i];
-                    Library *m = issues[j].CheckedOutBy;
-                    if (!isfound(AssetsOverdue, p))
-                        AssetsOverdue.push_back(p);
-                    if (!isfound(MembersOverdue, m)) {
-                        debug << "pushing member " << m->GetID() << " to the list\n";
+                    if (issues[j].DaysOverdue(today) > 0) 
+                    {
+                        Library *p = vL[i];
+                        Library *m = issues[j].CheckedOutBy;
 
-                        MembersOverdue.push_back(m);
+                        if (m == NULL) {
+                            debug << "issues[" << j << "].CheckedOutBy is NULL, p->GetID() == " << p->GetID() << endl;
+                            debug << "days overdue == " << issues[j].DaysOverdue(today) << endl;
+                            break;
+                        }
+
+                        else {
+                            debug << "checking if " << p->GetID() << " is in AssetsOverdue\n";
+                            if (!isfound(AssetsOverdue, p)) {
+                                debug << "adding " << p->GetID() << " to AssetsOverdue\n";
+                                AssetsOverdue.push_back(p);
+                            }
+
+                            debug << "checking if " << m->GetID() << " is in MembersOverdue\n";
+                            if (!isfound(MembersOverdue, m)) {
+                                debug << "adding " << m->GetID() << " to MembersOverdue\n";
+                                MembersOverdue.push_back(m);
+                            }
+                        }
                     }
                 }
             }
-        }
 
-        else if (vL[i]->DaysOverdue(today) > 0);
-        {
-            if (!isfound(AssetsOverdue, vL[i]))
-                AssetsOverdue.push_back(vL[i]);
-            if (!isfound(MembersOverdue, vL[i]->GetCheckedOutBy()[0])) {
-                debug << "pushing member " << vL[i]->GetCheckedOutBy()[0]->GetID() << " to the list\n";
+            else if (vL[i]->DaysOverdue(today) > 0)
+            {
+                Library *p = vL[i];
+                Library *m = vL[i]->GetCheckedOutBy()[0];
 
-                MembersOverdue.push_back(vL[i]->GetCheckedOutBy()[0]);
+                if (m == NULL) {
+                    debug << "vL[" << i << "]->GetCheckedOutBy()[0] is NULL, p->GetID() == " << p->GetID() << endl;
+                    continue;
+                }
+
+                else {
+                    debug << "checking if " << p->GetID() << " is in AssetsOverdue\n";
+                    if (!isfound(AssetsOverdue, p)) {
+                        debug << "adding " << p->GetID() << " to AssetsOverdue\n";
+                        AssetsOverdue.push_back(p);
+                    }
+
+                    debug << "checking if " << m->GetID() << " is in MembersOverdue\n";
+                    if (!isfound(MembersOverdue, m)) {
+                        debug << "adding " << m->GetID() << " to MembersOverdue\n";
+                        MembersOverdue.push_back(m);
+                    }
+                } 
             }
-        } 
+        }
     }
+
+    debug << "Leaving OverdueAssests\n";
 }
 //  for (int i = 0; i < MembersOverdue.size(); i++)
 //MembersOverdue[i]->WriteOut(cout);
@@ -667,7 +687,7 @@ void CheckoutAsset()
     string memID;
     cout << "Enter the ID of Member who is checking out an Asset: ";
     cin >> memID;
-    
+
     Library *searchMem = new Member();
     searchMem->SetID(memID);
 
@@ -799,13 +819,14 @@ int ReportSubmenu()
     cout << "\t0. Main Menu\n"; 
 
     cin >> selection;
-    //string forget;
-    //getline (cin, forget);
+    cin.ignore(256, '\n');
 
-    int sel = selection - '1';
+    int sel = selection - '0';
 
     if (sel >= 0 && sel <= 3)
         return sel;
+    else if (selection == 'q')
+        return 0;
     else {
         cout << "Invalid input\n";
         return -1;
@@ -816,9 +837,10 @@ void GenerateReport()
 {
     OverdueAssets();
     sort (AssetsOverdue.begin(), AssetsOverdue.end(), CompareOverdueAssets);  
-    int choice = ReportSubmenu();
-    while (choice == -1)
-        choice = Menu();
+    int choice;
+    do {
+        choice = ReportSubmenu();
+    } while (choice < 0);
 
     switch (choice)
     {

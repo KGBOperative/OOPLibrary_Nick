@@ -8,7 +8,7 @@
 #include <iostream>
 #include <vector>
 #include "Date.h"
-#define DEBUG true
+#define DEBUG false
 #define debug if (DEBUG) cout
 
 using namespace std;

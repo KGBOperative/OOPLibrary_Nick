@@ -70,16 +70,12 @@ string Book :: GetName () const
 
 vector <Library*> Book :: GetCheckedOutBy () const
 {
-    vector<Library*> COB;
-    COB.push_back(CheckedOutBy);
-    return COB;
+    return vector<Library*>(1,CheckedOutBy);
 }
 
 vector <string> Book :: GetCheckedOutByStr () const
 {
-    vector<string> COBS;
-    COBS.push_back(CheckedOutByStr);
-    return COBS;
+    return vector<string>(1, CheckedOutByStr);
 }
 
 int Book :: DaysOverdue (Date today)
