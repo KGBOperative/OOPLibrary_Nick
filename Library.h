@@ -15,99 +15,102 @@ using namespace std;
 
 class Library
 {
- public:
-  // Enumerated types for Library Objects
-  enum LibType {LIBRARY, MEMBER, ASSET, BOOK, PERIODICAL};
+    public:
+        // Enumerated types for Library Objects
+        enum LibType {LIBRARY, MEMBER, ASSET, BOOK, PERIODICAL};
 
-  // The default constructor creates a new library object 
-  Library ();
+        // The default constructor creates a new library object 
+        Library ();
 
-  // This constructor will create a new library object identical to the passed library object
-  Library (const Library & S);
+        // This constructor will create a new library object identical to the passed library object
+        Library (const Library & S);
 
-  // This destructor currently does nothing
-  ~Library ();
+        // This destructor currently does nothing
+        ~Library ();
 
-  // This assignment operator will copy one object to another of the same type
-  Library & operator = (const Library & S);
+        // This assignment operator will copy one object to another of the same type
+        Library & operator = (const Library & S);
 
-  // The IsA function will return the appropriate LibType value
-  virtual LibType IsA () const;
-  
-  //
-  virtual string GetID () const;
+        // The IsA function will return the appropriate LibType value
+        virtual LibType IsA () const;
 
-  //
-  virtual string GetName () const;
+        //
+        virtual string GetID () const;
 
-  //
-  virtual vector<Library*> GetCheckedOutBy () const;
-  
-  //
-  virtual vector<string> GetCheckedOutByStr () const;
+        // This mutator function sets the ID of the Library object
+        virtual void SetID(string id);
 
-  //
-  virtual void SetCheckedOut (Date & D);
+        //
+        virtual string GetName () const;
 
-  //
-  virtual int DaysOverdue (Date today);
+        //
+        virtual vector<Library*> GetCheckedOutBy () const;
 
-  //
-  bool operator == (Library L);
+        //
+        virtual vector<string> GetCheckedOutByStr () const;
 
-  // The input operator will call the ReadIn function for the passed library object
-  friend istream & operator >> (istream & ins, const Library & S);
+        //
+        virtual void SetCheckedOut (Date & D);
 
-  // The ouput operator will call the WriteOut function for the passed library object
-  friend ostream & operator << (ostream & outs, const Library & S);
+        //
+        virtual int DaysOverdue (Date today);
 
-  //
-  virtual void CheckoutLink (vector <Library *> vB, vector <Library *> vP);
+        //
+        bool operator == (Library L);
 
-  //
-  virtual void Checkout (vector <Library *>, string str, int count);
+        // The input operator will call the ReadIn function for the passed library object
+        friend istream & operator >> (istream & ins, const Library & S);
 
-  //
-  virtual void Return (vector <Library *> V, string str, int count);
+        // The ouput operator will call the WriteOut function for the passed library object
+        friend ostream & operator << (ostream & outs, const Library & S);
 
-  //
-  virtual void ReadIn (istream & input);
+        //
+        virtual void CheckoutLink (Library * lib);
 
-  //
-  virtual void WriteOut (ostream & output) const;
+        //
+        virtual void Checkout (Library * L, string str, int count);
 
-  //
-  virtual string GetPhone();
+        //
+        virtual void Return (int count);
 
-  //
-  virtual vector <Library*> GetCheckedOutVec () const;
-  
-  //
-  struct Issue
-  {
-    string Volume;
-    string Number;
-    Date PubDate;
-    Date CheckedOut;
-    Library * CheckedOutBy;
-    string CheckedOutByStr;
-    int DaysOverdue (Date today);
-    void SetCheckedOutIssue (Date & D);
-    string GetVolume () const;
-  };
+        //
+        virtual void ReadIn (istream & input);
 
-  //
-  virtual vector<Issue> GetIssues();
+        //
+        virtual void WriteOut (ostream & output) const;
+
+        //
+        virtual string GetPhone();
+
+        //
+        virtual vector <Library*> GetCheckedOutVec () const;
+
+        //
+        struct Issue
+        {
+            string Volume;
+            string Number;
+            Date PubDate;
+            Date CheckedOut;
+            Library * CheckedOutBy;
+            string CheckedOutByStr;
+            int DaysOverdue (Date today);
+            void SetCheckedOutIssue (Date & D);
+            string GetVolume () const;
+        };
+
+        //
+        virtual vector<Issue> GetIssues();
 
 
- protected:
-  LibType LType;
-  string Name;
-  string ID;
-  Date D;
- 
- private:
-  
+    protected:
+        LibType LType;
+        string Name;
+        string ID;
+        Date D;
+
+    private:
+
 };
 
 #endif

@@ -11,75 +11,75 @@ using namespace std;
 
 class Date
 {
- public:
-  // The default constructor creates a new date object 
-  Date ();
+    public:
+        // The default constructor creates a new date object 
+        Date ();
 
-  // This constructor will create a new date object identical to the passed date object
-  Date (const Date & D);
+        // This constructor will create a new date object identical to the passed date object
+        Date (const Date & D);
 
-  // This destructor currently does nothing
-  ~Date ();
+        // This destructor currently does nothing
+        ~Date ();
 
-  // Assignment Operator
-  Date & operator = (const Date & D);
+        // Assignment Operator
+        Date & operator = (const Date & D);
 
-  //
-  void SetMonth (int inMonth);
+        //
+        void SetMonth (int inMonth);
 
-  //
-  void SetDay (int inDay);
+        //
+        void SetDay (int inDay);
 
-  //
-  void SetYear (int inYear);
+        //
+        void SetYear (int inYear);
 
-  //
-  void SetMonthStr (string inMonth);
+        //
+        void SetMonthStr (string inMonth);
 
-  //
-  void SetDayStr (string inDay);
+        //
+        void SetDayStr (string inDay);
 
-  //
-  void SetYearStr (string inYear);
+        //
+        void SetYearStr (string inYear);
 
-  //
-  int GetMonth () const;
+        //
+        int GetMonth () const;
 
-  //
-  int GetDay () const;
+        //
+        int GetDay () const;
 
-  //
-  int GetYear () const;
+        //
+        int GetYear () const;
 
-  //
-  void ReadIn (istream & ins);
-  
-  //
-  void WriteOut (ostream & outs) const;
-  
-  //
-  void WriteOutNum (ostream & outs, bool num) const;
+        //
+        void ReadIn (istream & ins);
 
-  //
-  tm maketm(int year, int month, int day);
+        //
+        void WriteOut (ostream & outs) const;
 
-  //
-  double operator - (const Date & D);
+        //
+        void WriteOutNum (ostream & outs, bool num) const;
 
-  //
-  bool operator < (const Date & D) const;
+        //
+        tm maketm(int year, int month, int day);
 
-  //
-  bool operator > (const Date & D) const;
+        //
+        double operator - (const Date & D);
 
-  //
-  bool IsNull ();
+        //
+        bool operator < (const Date & D) const;
 
- private:
-  int month;
-  int day;
-  int year;
-  string Month, Day, Year;
+        //
+        bool operator > (const Date & D) const;
+
+        //
+        bool IsNull ();
+
+    private:
+        int month;
+        int day;
+        int year;
+        string Month, Day, Year;
 };
 
 #endif
