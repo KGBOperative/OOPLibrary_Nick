@@ -35,7 +35,7 @@ class Member : public Library
         void CheckoutLink (Library *asset); // const;
 
         //
-        void Checkout (vector <Library *> V, string str, int count); // const;
+        void Checkout (Library *V, string str, int count); // const;
 
         //
         void Return (int count);

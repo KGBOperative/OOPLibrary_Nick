@@ -683,7 +683,7 @@ void OverdueAssets () {
 
 
 void CheckoutAsset()
-{ // Needs to check if Asset is already checkedout, needs to check which issue for periodical, should print list of mems, assets
+{
     string memID;
     cout << "Enter the ID of Member who is checking out an Asset: ";
     cin >> memID;
@@ -698,7 +698,7 @@ void CheckoutAsset()
 
     int memIndex;
     for (int i = 0; i < vL.size(); i++) {
-        if (memID == vM[i]->GetID()) {
+        if (memID == vL[i]->GetID()) {
             memIndex = i;
             break;
         }
@@ -707,44 +707,53 @@ void CheckoutAsset()
     string assetID;
     cout << "Enter the ID of the Asset: ";
     cin >> assetID;
-    vector <Library::Issue>  issues;
-    bool memberhas = false;
-    for (int i = 0; i < vB.size(); i++)
-    {
-        issues = vP[i]->GetIssues();
+    
+    Date today = GetCurrentDate();
 
-        if (assetID == vP[i]->GetID())
-        {
-            if (issues.size() > 0) {
-                int vol;
-                cout << "Which Volume are they checking out: ";
-                cin >> vol;
-                if (issues[vol-1].CheckedOutBy == NULL)
-                {
-                    vL[memIndex]->Checkout(vL[i], "", 0);
-                    vL[i]->Checkout(vL[memIndex], memID, vol-1);
+    for (int i = 0; i < vL.size(); i++) {
+        if (vL[i]->GetID() == assetID) {
+            if (vL[i]->IsA() == Library::PERIODICAL) {
+                vector<Library::Issue> issues = vL[i]->GetIssues();
+                int issue = 0;
+                cout << "Please enter the Issue Number to checkout: ";
+                cin >> issue;
+
+                cout << "response: " << issue << " of number of issues: " << issues.size() << endl;
+
+                if (issue > 0 && issue <= issues.size()) {
+                    cout << "check 0\n";
+                    cout << "coBy.size == " << vL[i]->GetCheckedOutBy().size() << endl;
+                    if (vL[i]->GetCheckedOutBy()[issue-1] == NULL) {
+                        cout << "check 1\n";
+                        vL[memIndex]->Checkout(vL[i], assetID, 0);
+                        cout << "check 2\n";
+                        vL[i]->Checkout(vL[memIndex], memID, issue-1);
+                        cout << "check 3\n";
+                        issues[issue-1].CheckedOut = today;
+                    }
+                    else {
+                        cout << "That Issue is already checked out\n";
+                    }
+                }
+
+                else {
+                    cout << "That Issue was not found\n";
+                }
+            }
+            else if (vL[i]->IsA() == Library::BOOK) {
+                if (vL[i]->GetCheckedOutBy()[0] == NULL) {
+                    vL[memIndex]->Checkout(vL[i], assetID, 0);
+                    vL[i]->Checkout(vL[memIndex], memID, 0);
+                    vL[i]->SetCheckedOut(today);
                 }
                 else {
-                    cout << "That Asset has been checked out already\n";
+                    cout << "That Asset has already been checked out\n";
                 }
-
-                return;
             }
 
-            else if (vB[i]->GetCheckedOutBy()[0] == NULL)
-            {
-                vL[memIndex]->Checkout(vL[i], "", 0);
-                vL[i]->Checkout(vL[memIndex], memID, 0);
-                return;
-            }
-
-            else {
-                cout << "That Asset has been checked out already\n";
-                return;
-            }
+            return;
         }
     }
-
     cout << "That Asset ID does not exist. " << endl;
     // Create functions in classes and set CheckedOutStr to asset, vM[memcount]->CheckedOut push back pointer to vB[assetcount]
     // or vP[assetcount], vB or vP[assetcount]->CheckedOutByStr to member, vBor vP[assetcount]->CheckedOutBy push back

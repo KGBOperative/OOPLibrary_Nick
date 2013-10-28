@@ -85,11 +85,10 @@ void Member :: CheckoutLink (Library * asset) //const
 }
 
 //
-void Member :: Checkout (vector <Library *> V, string str, int count) //const
+void Member :: Checkout (Library *V, string str, int count) //const
 {
     CheckedOutStr.push_back(str);
-    Library *l = V[count];
-    CheckedOut.push_back(l);
+    CheckedOut.push_back(V);
 }
 
 //

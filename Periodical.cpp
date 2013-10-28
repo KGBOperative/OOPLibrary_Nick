@@ -79,11 +79,13 @@ string Periodical :: GetName () const
 }
 
 //
-vector <Library*> Periodical :: GetCheckedOutBy () 
+vector <Library*> Periodical :: GetCheckedOutBy () const
 {
+    vector <Library*> coBy;
+    cout << "GetCheckedOutBy() check\n";
     for (int i = 0; i < Issues.size(); i++)
-        CheckedOutByVec.push_back(Issues[i].CheckedOutBy);
-    return CheckedOutByVec;
+        coBy.push_back(Issues[i].CheckedOutBy);
+    return coBy;
 }
 
 //

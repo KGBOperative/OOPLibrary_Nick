@@ -42,7 +42,7 @@ class Periodical : public Asset
         string GetName () const;
 
         //
-        vector <Library*> GetCheckedOutBy () ;
+        vector <Library*> GetCheckedOutBy () const ;
 
         //
         vector <string> GetCheckedOutByStr () ;
